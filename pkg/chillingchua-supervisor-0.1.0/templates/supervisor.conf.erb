@@ -1,0 +1,29 @@
+[program:<%= @title %>]
+process_name=<%= @process_name %>
+<%- if @process_num -%>
+numprocs=<%= @process_num %>
+<%- end -%>
+<%- if @processes_start -%>
+numprocs_start=<%= @processes_start %>
+<%- end -%>
+command=<%= @template_command %>
+directory=<%= @directory %>
+user=<%= @user %>
+autostart=true
+autorestart=<%= @autostart %>
+redirect_stderr=<%= @redirect_stderr %>
+<%- if @stdout_logfile -%>
+stdout_logfile=<%= @stdout_logfile %>
+<%- end -%>
+<%- if @startsecs -%>
+startsecs=<%= @startsecs %>
+<%- end -%>
+<%- if @stopwaitsecs -%>
+stopwaitsecs=<%= @stopwaitsecs %>
+<%- end -%>
+<%- if @priority -%>
+priority=<%= @priority -%>
+<%- end -%> 
+<%- if @environment -%>
+environment=<%= @environment %>
+<%- end -%>
