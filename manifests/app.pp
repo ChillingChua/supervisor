@@ -1,10 +1,11 @@
 define supervisor::app (
   $app_name,
   $command,
-  $process_group = $title,
+  $process_group = '',
   $process_num = 1,
   $processes_start = 1,
   $autostart = false,
+  $autorestart = false,
   $redirect_stderr = false,
   $stdout_logfile = undef,
   $directory = undef,
@@ -18,7 +19,7 @@ define supervisor::app (
   $conf_file = "supervisor_${app_name}"
   $service_name = $conf_file
   
-  if $processes_num > 0 {
+  if $process_num {
       
       $template_command = regsubst($command, '\.cfg', '%(process_num)d.cfg')
       
@@ -30,23 +31,24 @@ define supervisor::app (
   
   } else {
       $process_name = $app_name
+      $template_name = $command
+      notify { $process_name: }
+      notify { $template_name: }
   }
   
   file { $conf_file:
-    path    => "/etc/supervisor/conf.d/${process_group}.conf",
+    path    => "/etc/supervisor/conf.d/${title}.conf",
     ensure  => present,
     content => template('supervisor/supervisor.conf.erb'),
-    require => Package['supervisor'],
-    notify  => Service['supervisord'],
+    #require => Package['supervisor'],
+    #notify  => Service['supervisord'],
   }
 
   service { $service_name:
-    ensure     => running,
     path       =>  ['/usr/bin'],
     start      => "supervisorctl start ${process_group}:*",
     restart    => "supervisorctl restart ${process_group}:*",
     stop       => "supervisorctl stop ${process_group}:*",
-    #status     => "supervisorctl status | awk '/^${process_name}[: ]/{print \$2}' | grep '^RUNNING$'",
     subscribe  => File[$conf_file], 
     hasrestart => true, 
     hasstatus  => false,

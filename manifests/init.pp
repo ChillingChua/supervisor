@@ -1,13 +1,18 @@
 class supervisor {
 
-  require pip
+  require python
 
-  package { "supervisor":
+  package { 'supervisor':
     ensure   => installed,
     provider => pip,
   }
 
-  service { "supervisord":
+  package { "supervisor-serialrestart":
+    ensure   => installed,
+    provider => pip,
+  }
+
+  service { 'supervisord':
     ensure    => running,
     enable    => true,
     require   => [Package['supervisor'],
